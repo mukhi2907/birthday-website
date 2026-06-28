@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Surprise – Dhruv's Birthday 🎁</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+  <canvas id="confetti-canvas"></canvas>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="letter.html">Letter 💌</a>
+    <a href="memories.html">Memories 💫</a>
+    <a href="wishes.html">Wishes</a>
+    <a href="surprise.html" class="active">Surprise</a>
+  </nav>
+
+  <section style="min-height:calc(100vh - 60px); display:flex; flex-direction:column; align-items:center; justify-content:center; padding-top:40px; padding-bottom:40px;">
+    <div class="section-heading">
+      <div class="tag">🎁 A Secret Just for You</div>
+      <h1 id="surprise-title">Tap the Gift!</h1>
+    </div>
+
+    <!-- 3D Gift Box -->
+    <div class="gift-scene" id="gift-scene">
+      <div class="gift-box" id="gift-box" onclick="openGift()">
+        <div class="gift-lid"></div>
+        <div class="gift-body">
+          <div class="gift-ribbon-v"></div>
+          <div class="gift-ribbon-h"></div>
+        </div>
+      </div>
+    </div>
+    <p id="gift-click-hint" style="text-align:center; margin-top:12px;">Click the gift to open it ✨</p>
+
+    <!-- Hidden Surprise Message -->
+    <div id="message" class="hidden glass-card"></div>
+  </section>
+
+  <!-- Floating Music Widget -->
+  <div class="audio-widget" id="audio-widget">
+    <button class="audio-btn" id="audio-btn" aria-label="Play Music">▶</button>
+    <div class="audio-info">
+      <span class="audio-title">Happy Birthday Dhruv 🎵</span>
+      <div class="audio-visualizer">
+        <div class="visualizer-bar"></div>
+        <div class="visualizer-bar"></div>
+        <div class="visualizer-bar"></div>
+        <div class="visualizer-bar"></div>
+        <div class="visualizer-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <audio id="bg-music" loop>
+    <source src="music/birthday.mp3" type="audio/mpeg">
+  </audio>
+
+  <footer>Made with <span>♥</span> by Mukti for Dhruv</footer>
+</body>
+</html>

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Letter for Dhruv 💌</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="script.js" defer></script>
+
+  <style>
+    /* ── PETAL RAIN ── */
+    .petal {
+      position: fixed;
+      top: -40px;
+      font-size: 1.2rem;
+      pointer-events: none;
+      z-index: 1;
+      animation: petalFall linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes petalFall {
+      0%   { opacity: 0; transform: translateY(0) rotate(0deg); }
+      5%   { opacity: 1; }
+      95%  { opacity: 0.8; }
+      100% { opacity: 0; transform: translateY(105vh) rotate(360deg); }
+    }
+
+    /* ── ENVELOPE SCENE ── */
+    .envelope-scene {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 62px);
+      position: relative;
+      z-index: 10;
+      padding: 40px 20px;
+    }
+
+    .envelope-wrap {
+      perspective: 900px;
+      cursor: pointer;
+    }
+
+    .envelope {
+      width: 300px;
+      height: 200px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s ease;
+      filter: drop-shadow(0 20px 50px rgba(255,110,180,0.35));
+    }
+
+    .envelope-wrap:hover .envelope {
+      transform: scale(1.05) translateY(-6px);
+      filter: drop-shadow(0 28px 65px rgba(255,110,180,0.5));
+    }
+
+    /* Envelope body */
+    .env-body {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(170deg, #1a0630 0%, #2d0d4e 100%);
+      border-radius: 12px;
+      border: 1px solid rgba(255,110,180,0.3);
+    }
+
+    /* Envelope bottom fold (V shape) */
+    .env-bottom {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 50%;
+      overflow: hidden;
+    }
+
+    .env-bottom::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 200%;
+      background: linear-gradient(160deg, #240a40 0%, #1a0630 100%);
+      clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+      border-left: 1px solid rgba(255,110,180,0.15);
+      border-right: 1px solid rgba(255,110,180,0.15);
+    }
+
+    /* Envelope flap (top) */
+    .env-flap {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 60%;
+      transform-origin: top center;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 5;
+    }
+
+    .env-flap::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 100%;
+      background: linear-gradient(160deg, #2d0d4e 0%, #3d1460 100%);
+      clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+      border-right: 1px solid rgba(255,110,180,0.15);
+      border-left: 1px solid rgba(255,110,180,0.15);
+    }
+
+    /* Wax seal */
+    .wax-seal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ff6eb4, #c0185a);
+      border: 2px solid rgba(255,200,220,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      z-index: 10;
+      box-shadow: 0 4px 20px rgba(255,110,180,0.5), inset 0 2px 4px rgba(255,255,255,0.2);
+      animation: sealPulse 2.5s infinite ease-in-out;
+    }
+
+    @keyframes sealPulse {
+      0%, 100% { box-shadow: 0 4px 20px rgba(255,110,180,0.4), inset 0 2px 4px rgba(255,255,255,0.2); }
+      50%       { box-shadow: 0 4px 35px rgba(255,110,180,0.7), inset 0 2px 4px rgba(255,255,255,0.2); }
+    }
+
+    /* Envelope opened state */
+    .envelope-wrap.opened .env-flap {
+      transform: rotateX(-180deg);
+    }
+
+    .envelope-wrap.opened .wax-seal {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0);
+      transition: all 0.4s ease;
+    }
+
+    /* Hint text */
+    .envelope-hint {
+      margin-top: 28px;
+      font-size: 0.9rem;
+      color: rgba(240,234,255,0.5);
+      letter-spacing: 0.5px;
+      animation: pulseOpacity 2s infinite ease-in-out;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ── LETTER PAPER ── */
+    .letter-container {
+      position: relative;
+      z-index: 10;
+      max-width: 680px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px 20px 80px;
+      display: none;
+      animation: letterReveal 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    .letter-container.show {
+      display: block;
+    }
+
+    @keyframes letterReveal {
+      from { opacity: 0; transform: translateY(40px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .letter-paper {
+      background: linear-gradient(160deg,
+        rgba(255,240,250,0.07) 0%,
+        rgba(200,160,255,0.04) 100%
+      );
+      border: 1px solid rgba(255,110,180,0.2);
+      border-radius: 28px;
+      padding: 58px 52px;
+      position: relative;
+      backdrop-filter: blur(16px);
+      box-shadow:
+        0 30px 80px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(255,255,255,0.05) inset,
+        0 1px 0 rgba(255,255,255,0.1) inset;
+      overflow: hidden;
+    }
+
+    /* Paper grain / texture overlay */
+    .letter-paper::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 15% 85%, rgba(255,110,180,0.06) 0%, transparent 50%),
+        radial-gradient(circle at 85% 15%, rgba(168,85,247,0.06) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    /* Decorative top line */
+    .letter-paper::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255,110,180,0.5), rgba(168,85,247,0.5), transparent);
+      border-radius: 2px;
+    }
+
+    /* Letter date */
+    .letter-date {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: rgba(255,110,180,0.7);
+      text-align: right;
+      margin-bottom: 36px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Salutation */
+    .letter-salutation {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.4rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ff6eb4, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 30px;
+      line-height: 1.2;
+    }
+
+    /* Body paragraphs */
+    .letter-body p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.22rem;
+      line-height: 2;
+      color: rgba(240, 234, 255, 0.82);
+      margin-bottom: 22px;
+      font-weight: 400;
+    }
+
+    .letter-body p em {
+      font-style: italic;
+      color: rgba(255,110,180,0.9);
+    }
+
+    .letter-body p strong {
+      color: white;
+      font-weight: 600;
+    }
+
+    /* Divider */
+    .letter-divider {
+      text-align: center;
+      margin: 36px 0;
+      color: rgba(255,110,180,0.5);
+      font-size: 1.1rem;
+      letter-spacing: 8px;
+    }
+
+    /* Closing */
+    .letter-closing {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: rgba(240,234,255,0.7);
+      margin-top: 10px;
+      margin-bottom: 6px;
+    }
+
+    .letter-signature {
+      font-family: 'Dancing Script', cursive;
+      font-size: 3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ff6eb4, #a855f7, #fbbf24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.1;
+    }
+
+    /* Corner decoration */
+    .corner-deco {
+      position: absolute;
+      font-size: 1.4rem;
+      opacity: 0.3;
+    }
+    .corner-deco.tl { top: 18px; left: 20px; }
+    .corner-deco.tr { top: 18px; right: 20px; }
+    .corner-deco.bl { bottom: 18px; left: 20px; }
+    .corner-deco.br { bottom: 18px; right: 20px; }
+
+    /* Back button */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 32px;
+      padding: 10px 24px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50px;
+      color: rgba(240,234,255,0.6);
+      font-size: 0.9rem;
+      font-family: 'Outfit', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+    .back-btn:hover {
+      background: rgba(255,110,180,0.1);
+      border-color: rgba(255,110,180,0.3);
+      color: #ff6eb4;
+      transform: translateX(-4px);
+    }
+
+    @media (max-width: 600px) {
+      .letter-paper { padding: 36px 24px; }
+      .letter-salutation { font-size: 1.9rem; }
+      .letter-body p { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Floating petals will be injected by JS -->
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="letter.html" class="active">Letter 💌</a>
+    <a href="memories.html">Memories 💫</a>
+    <a href="wishes.html">Wishes</a>
+    <a href="surprise.html">Surprise</a>
+  </nav>
+
+  <!-- ENVELOPE VIEW -->
+  <div class="envelope-scene" id="envelope-scene">
+    <div style="text-align:center; margin-bottom: 40px; position:relative; z-index:10;">
+      <div class="hero-tag" style="margin: 0 auto 16px;">💌 &nbsp; A Special Letter</div>
+      <h1 style="font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:700;
+        background:linear-gradient(135deg,#fff 20%,#ffc3e1 60%,#d8aaff 100%);
+        -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">
+        A Letter for Dhruv
+      </h1>
+      <p style="color:rgba(240,234,255,0.5); font-size:1rem; margin-top:10px; font-weight:300;">
+        From Mukti, with all the love in the world 💕
+      </p>
+    </div>
+
+    <div class="envelope-wrap" id="envelope-wrap" onclick="openEnvelope()">
+      <div class="envelope">
+        <div class="env-body"></div>
+        <div class="env-bottom"></div>
+        <div class="env-flap"></div>
+        <div class="wax-seal">💌</div>
+      </div>
+    </div>
+
+    <p class="envelope-hint">✨ &nbsp; Tap the envelope to open &nbsp; ✨</p>
+  </div>
+
+  <!-- LETTER VIEW (hidden initially) -->
+  <div class="letter-container" id="letter-container">
+    <a class="back-btn" onclick="closeEnvelope()">← Back to Envelope</a>
+
+    <div class="letter-paper" id="letter-paper">
+      <!-- Corner decorations -->
+      <span class="corner-deco tl">🌸</span>
+      <span class="corner-deco tr">✨</span>
+      <span class="corner-deco bl">💫</span>
+      <span class="corner-deco br">🌸</span>
+
+      <div class="letter-date" id="letter-date">July 29, 2026</div>
+
+      <div class="letter-salutation">Dear Dhruv,</div>
+
+      <div class="letter-body" id="letter-body">
+        <!-- Typewriter injected here -->
+      </div>
+
+      <div class="letter-divider">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+      <div class="letter-closing">Forever & always,</div>
+      <div class="letter-signature">Mukti 💕</div>
+    </div>
+  </div>
+
+  <footer style="position:relative; z-index:10;">Made with <span style="color:#ff6eb4;">♥</span> by Mukti for Dhruv</footer>
+
+  <script>
+    // ── Floating Petals ──────────────────────────────────
+    const PETALS = ["🌸","🌺","💮","🌷","✨","💫","🦋","🌹"];
+    for (let i = 0; i < 18; i++) {
+      const p = document.createElement("div");
+      p.className = "petal";
+      p.innerText = PETALS[Math.floor(Math.random() * PETALS.length)];
+      p.style.left = Math.random() * 100 + "vw";
+      p.style.fontSize = (Math.random() * 12 + 10) + "px";
+      p.style.animationDuration = (Math.random() * 10 + 8) + "s";
+      p.style.animationDelay = (Math.random() * 10) + "s";
+      document.body.appendChild(p);
+    }
+
+    // ── Letter Content ──────────────────────────────────
+    const LETTER_PARAGRAPHS = [
+      `There are some people who walk into your life and, without even trying, make everything feel a little warmer, a little brighter. <em>You are that person, Dhruv.</em>`,
+
+      `On your birthday, I find myself thinking about all the little things that make you <em>you</em> — the way you laugh, the way you always manage to make things feel lighter, the way your presence just feels like home.`,
+
+      `You have this rare ability to make everyone around you feel seen and valued. You give without expecting anything in return, and that is one of the most beautiful things about you. <strong>The world is genuinely better because you're in it.</strong>`,
+
+      `I hope that this year brings you everything your heart has been quietly wishing for. I hope it brings you peace, and joy, and the kind of moments that you'll look back on and smile. You deserve mornings that feel magical and nights that feel safe.`,
+
+      `<em>I hope you know how truly special you are.</em> Not just today, not just on your birthday — but every single ordinary day. You matter more than words can say.`,
+
+      `So here's to you, Dhruv — to another year of being wonderfully, beautifully yourself. <strong>Happy Birthday. 🎂</strong>`
+    ];
+
+    // ── Envelope Open/Close ──────────────────────────────
+    function openEnvelope() {
+      const wrap      = document.getElementById("envelope-wrap");
+      const scene     = document.getElementById("envelope-scene");
+      const container = document.getElementById("letter-container");
+
+      wrap.classList.add("opened");
+
+      setTimeout(() => {
+        scene.style.display = "none";
+        container.classList.add("show");
+        // Set today's date
+        document.getElementById("letter-date").innerText =
+          new Date().toLocaleDateString("en-US", { year:"numeric", month:"long", day:"numeric" });
+        typewriterLetter();
+      }, 900);
+    }
+
+    function closeEnvelope() {
+      const wrap      = document.getElementById("envelope-wrap");
+      const scene     = document.getElementById("envelope-scene");
+      const container = document.getElementById("letter-container");
+
+      container.classList.remove("show");
+      scene.style.display = "flex";
+      wrap.classList.remove("opened");
+      document.getElementById("letter-body").innerHTML = "";
+    }
+
+    // ── Typewriter Letter ───────────────────────────────
+    function typewriterLetter() {
+      const body = document.getElementById("letter-body");
+      body.innerHTML = "";
+
+      LETTER_PARAGRAPHS.forEach((text, pi) => {
+        setTimeout(() => {
+          const p = document.createElement("p");
+          p.innerHTML = "";
+          body.appendChild(p);
+
+          // Parse simple tags and type character by character
+          const div = document.createElement("div");
+          div.innerHTML = text;
+          const raw = div.innerHTML;
+          let i = 0;
+          let inTag = false;
+
+          function typeChar() {
+            if (i >= raw.length) return;
+            // Skip through HTML tags instantly
+            if (raw[i] === "<") inTag = true;
+            if (inTag) {
+              let tagEnd = raw.indexOf(">", i);
+              p.innerHTML += raw.slice(i, tagEnd + 1);
+              i = tagEnd + 1;
+              inTag = false;
+              setTimeout(typeChar, 12);
+            } else {
+              p.innerHTML += raw[i];
+              i++;
+              body.scrollTop = body.scrollHeight;
+              setTimeout(typeChar, 18);
+            }
+          }
+          typeChar();
+        }, pi * 1200);
+      });
+    }
+  </script>
+</body>
+</html>

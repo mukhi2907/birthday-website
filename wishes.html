@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wishes – Dhruv's Birthday</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="letter.html">Letter 💌</a>
+    <a href="memories.html">Memories 💫</a>
+    <a href="wishes.html" class="active">Wishes</a>
+    <a href="surprise.html">Surprise</a>
+  </nav>
+
+  <section>
+    <div class="section-heading">
+      <div class="tag">✉️ Notes of Love</div>
+      <h1>Wishes Wall</h1>
+    </div>
+
+    <div class="wishes-layout">
+      <!-- Form -->
+      <div class="wishes-form-card glass-card">
+        <h2>Leave a Wish 🎈</h2>
+        <p>Write something special for Dhruv and pin it to the wall!</p>
+        <form class="wishes-form" id="wish-form">
+          <div class="form-group">
+            <label for="author-name">Your Name</label>
+            <input type="text" id="author-name" placeholder="e.g., Priya" required maxlength="25">
+          </div>
+          <div class="form-group">
+            <label for="wish-message">Your Wish</label>
+            <textarea id="wish-message" rows="4" placeholder="Happy Birthday Dhruv! You deserve the world..." required maxlength="150"></textarea>
+          </div>
+          <button type="submit" class="btn"><span>Post Wish &nbsp;🎉</span></button>
+        </form>
+      </div>
+
+      <!-- Sticky Notes Board -->
+      <div class="wishes-grid" id="wishes-grid"></div>
+    </div>
+
+    <div style="text-align:center;margin-top:50px;">
+      <a class="btn" href="surprise.html"><span>Unlock Surprise &nbsp;🎁</span></a>
+    </div>
+  </section>
+
+  <footer>Made with <span>♥</span> by Mukti for Dhruv</footer>
+</body>
+</html>

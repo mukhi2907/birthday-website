@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Special Memories – Dhruv & Mukti</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <script src="script.js" defer></script>
+  <style>
+    /* ── Memory Cards ── */
+    .memories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 20px;
+    }
+
+    .memory-card {
+      padding: 32px 28px;
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeSlideUp 0.6s ease forwards;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .memory-card:hover {
+      transform: translateY(-8px) !important;
+      box-shadow: 0 25px 60px rgba(168,85,247,0.25);
+      border-color: rgba(168,85,247,0.4) !important;
+    }
+
+    /* Glow accent line at top */
+    .memory-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      border-radius: 24px 24px 0 0;
+    }
+
+    .memory-card.pink::before   { background: linear-gradient(90deg, #ff6eb4, #f43f5e); }
+    .memory-card.purple::before { background: linear-gradient(90deg, #a855f7, #7c3aed); }
+    .memory-card.gold::before   { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+    .memory-card.teal::before   { background: linear-gradient(90deg, #34d399, #059669); }
+    .memory-card.blue::before   { background: linear-gradient(90deg, #60a5fa, #3b82f6); }
+
+    .memory-emoji {
+      font-size: 2.4rem;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .memory-date {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 50px;
+      margin-bottom: 16px;
+    }
+
+    .memory-card.pink   .memory-date { background: rgba(255,110,180,0.12); color: #ff6eb4; border: 1px solid rgba(255,110,180,0.25); }
+    .memory-card.purple .memory-date { background: rgba(168,85,247,0.12);  color: #c084fc; border: 1px solid rgba(168,85,247,0.25); }
+    .memory-card.gold   .memory-date { background: rgba(251,191,36,0.12);  color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); }
+    .memory-card.teal   .memory-date { background: rgba(52,211,153,0.12);  color: #34d399; border: 1px solid rgba(52,211,153,0.25); }
+    .memory-card.blue   .memory-date { background: rgba(96,165,250,0.12);  color: #60a5fa; border: 1px solid rgba(96,165,250,0.25); }
+
+    .memory-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .memory-note {
+      font-size: 0.95rem;
+      color: rgba(240,234,255,0.6);
+      line-height: 1.75;
+      font-weight: 300;
+    }
+
+    .memory-note em {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.1rem;
+      font-style: normal;
+      color: rgba(240,234,255,0.85);
+    }
+
+    /* Add memory form */
+    .add-memory-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 50px;
+      padding: 12px 28px;
+      background: rgba(168,85,247,0.12);
+      border: 1px dashed rgba(168,85,247,0.4);
+      border-radius: 50px;
+      color: #c084fc;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .add-memory-btn:hover {
+      background: rgba(168,85,247,0.2);
+      border-color: rgba(168,85,247,0.7);
+      transform: scale(1.03);
+    }
+
+    /* Add memory modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(7,4,15,0.9);
+      backdrop-filter: blur(20px);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 480px;
+      padding: 40px 36px;
+      border-radius: 28px;
+      transform: scale(0.9);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .modal-overlay.active .modal-box { transform: scale(1); }
+
+    .modal-box h3 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: white;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .modal-box p {
+      color: rgba(240,234,255,0.5);
+      font-size: 0.9rem;
+      margin-bottom: 28px;
+      font-weight: 300;
+    }
+
+    .modal-form { display: flex; flex-direction: column; gap: 14px; }
+
+    .modal-form input,
+    .modal-form textarea,
+    .modal-form select {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 13px 18px;
+      color: white;
+      font-size: 0.95rem;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.3s ease;
+      resize: none;
+    }
+
+    .modal-form select option { background: #1a0d30; color: white; }
+
+    .modal-form input:focus,
+    .modal-form textarea:focus,
+    .modal-form select:focus {
+      outline: none;
+      border-color: rgba(168,85,247,0.5);
+      box-shadow: 0 0 0 4px rgba(168,85,247,0.1);
+    }
+
+    .modal-form input::placeholder,
+    .modal-form textarea::placeholder { color: rgba(255,255,255,0.25); }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .modal-cancel {
+      flex: 1;
+      padding: 12px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      color: rgba(240,234,255,0.6);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .modal-cancel:hover {
+      background: rgba(255,255,255,0.09);
+      color: white;
+    }
+
+    .modal-save {
+      flex: 2;
+      padding: 12px;
+      background: linear-gradient(135deg, #ff6eb4, #a855f7);
+      border: none;
+      border-radius: 14px;
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Outfit', sans-serif;
+      box-shadow: 0 4px 20px rgba(168,85,247,0.3);
+    }
+
+    .modal-save:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(168,85,247,0.5);
+    }
+
+    /* Delete button on card */
+    .memory-delete {
+      position: absolute;
+      top: 14px; right: 14px;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(240,234,255,0.4);
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      opacity: 0;
+    }
+
+    .memory-card:hover .memory-delete {
+      opacity: 1;
+    }
+
+    .memory-delete:hover {
+      background: rgba(244,63,94,0.2);
+      border-color: rgba(244,63,94,0.4);
+      color: #f43f5e;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="letter.html">Letter 💌</a>
+    <a href="memories.html" class="active">Memories 💫</a>
+    <a href="wishes.html">Wishes</a>
+    <a href="surprise.html">Surprise</a>
+  </nav>
+
+  <section>
+    <div class="section-heading">
+      <div class="tag">💫 Our Special Dates</div>
+      <h1>Memories & Moments</h1>
+    </div>
+
+    <div class="memories-grid" id="memories-grid">
+      <!-- Rendered by JS -->
+    </div>
+
+    <div style="text-align:center;">
+      <button class="add-memory-btn" onclick="openMemoryModal()">
+        ✦ &nbsp; Add a Special Date
+      </button>
+    </div>
+  </section>
+
+  <!-- Add Memory Modal -->
+  <div class="modal-overlay" id="memory-modal">
+    <div class="modal-box glass-card">
+      <h3>Add a Memory 💫</h3>
+      <p>Write down a date or moment that means something special.</p>
+      <form class="modal-form" id="memory-form">
+        <input type="text" id="mem-emoji" placeholder="Emoji (e.g. 🌸)" maxlength="4">
+        <input type="text" id="mem-date" placeholder="Date (e.g. July 29, 2025)" maxlength="40" required>
+        <input type="text" id="mem-title" placeholder="Title (e.g. First Time We Met)" maxlength="50" required>
+        <textarea id="mem-note" rows="3" placeholder="Write a little note about this moment..." maxlength="200" required></textarea>
+        <select id="mem-color">
+          <option value="pink">🌸 Pink</option>
+          <option value="purple">💜 Purple</option>
+          <option value="gold">✨ Gold</option>
+          <option value="teal">🍃 Teal</option>
+          <option value="blue">💙 Blue</option>
+        </select>
+        <div class="modal-actions">
+          <button type="button" class="modal-cancel" onclick="closeMemoryModal()">Cancel</button>
+          <button type="submit" class="modal-save">Save Memory 💾</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer>Made with <span>♥</span> by Mukti for Dhruv</footer>
+
+  <script>
+    const MEM_KEY = "dhruv_mukti_memories_v1";
+
+    const DEFAULT_MEMORIES = [
+      {
+        emoji: "🎂",
+        date: "July 29",
+        title: "Dhruv's Birthday!",
+        note: "The most special day of the year — celebrating you, Dhruv. Hope this year brings you everything you deserve and more. 🌟",
+        color: "pink"
+      },
+      {
+        emoji: "🌸",
+        date: "The Day We Met",
+        title: "A Day to Remember",
+        note: "Some days just feel different — lighter, warmer. That was one of them. ✨",
+        color: "purple"
+      },
+      {
+        emoji: "💫",
+        date: "Our First Laugh",
+        title: "That One Moment",
+        note: "You know exactly which moment this is. The kind of laugh you never forget. 😄",
+        color: "gold"
+      }
+    ];
+
+    let memories = JSON.parse(localStorage.getItem(MEM_KEY) || "null");
+    if (!memories || memories.length === 0) {
+      memories = DEFAULT_MEMORIES;
+      localStorage.setItem(MEM_KEY, JSON.stringify(memories));
+    }
+
+    function renderMemories() {
+      const grid = document.getElementById("memories-grid");
+      grid.innerHTML = "";
+      memories.forEach((m, i) => {
+        const card = document.createElement("div");
+        card.className = `memory-card glass-card ${m.color || "pink"}`;
+        card.style.animationDelay = `${i * 0.1}s`;
+        card.innerHTML = `
+          <button class="memory-delete" onclick="deleteMemory(${i})" title="Delete">✕</button>
+          <span class="memory-emoji">${m.emoji || "💫"}</span>
+          <div class="memory-date">📅 &nbsp;${m.date}</div>
+          <div class="memory-title">${m.title}</div>
+          <p class="memory-note"><em>${m.note}</em></p>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function deleteMemory(index) {
+      memories.splice(index, 1);
+      localStorage.setItem(MEM_KEY, JSON.stringify(memories));
+      renderMemories();
+    }
+
+    function openMemoryModal() {
+      document.getElementById("memory-modal").classList.add("active");
+    }
+
+    function closeMemoryModal() {
+      document.getElementById("memory-modal").classList.remove("active");
+      document.getElementById("memory-form").reset();
+    }
+
+    document.getElementById("memory-form").addEventListener("submit", e => {
+      e.preventDefault();
+      const newMem = {
+        emoji: document.getElementById("mem-emoji").value.trim() || "💫",
+        date:  document.getElementById("mem-date").value.trim(),
+        title: document.getElementById("mem-title").value.trim(),
+        note:  document.getElementById("mem-note").value.trim(),
+        color: document.getElementById("mem-color").value
+      };
+      memories.unshift(newMem);
+      localStorage.setItem(MEM_KEY, JSON.stringify(memories));
+      renderMemories();
+      closeMemoryModal();
+    });
+
+    // Close modal when clicking outside
+    document.getElementById("memory-modal").addEventListener("click", e => {
+      if (e.target === document.getElementById("memory-modal")) closeMemoryModal();
+    });
+
+    renderMemories();
+  </script>
+</body>
+</html>
